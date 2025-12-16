@@ -14,7 +14,7 @@ dotenv.config()
 
 const port=process.env.PORT || 5000
 app.use(cors({
-    origin:"https://crre.vercel.app",
+    origin:"https://crre-30.vercel.app",
     credentials:true
 }))
 app.use(express.json())
