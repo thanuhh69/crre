@@ -33,3 +33,7 @@ server.listen(port , ()=>{
     console.log("server started")
 })
 
+app.use(cors({
+  origin: "https://crre.vercel.app/",
+  credentials: true
+}))
