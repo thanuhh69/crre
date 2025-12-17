@@ -29,12 +29,11 @@ export const signUp=async (req,res)=>{
 
         const token=await genToken(user._id)
 
-        res.cookie("token",token,{
-            httpOnly:true,
-            maxAge:7 * 24 * 60 * 60 * 1000,
-            secure:true,
-            sameSite:"none"
-        })
+        const cookieOptions = process.env.NODE_ENV === 'production'
+            ? { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' }
+            : { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: false, sameSite: 'lax' }
+
+        res.cookie("token", token, cookieOptions)
 
         return res.status(201).json(user)
 
@@ -60,12 +59,11 @@ export const signIn=async (req,res)=>{
 
         const token=await genToken(user._id)
 
-        res.cookie("token",token,{
-            httpOnly:true,
-            maxAge:7 * 24 * 60 * 60 * 1000,
-            secure:true,
-            sameSite:"none"
-        })
+        const cookieOptions = process.env.NODE_ENV === 'production'
+            ? { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' }
+            : { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, secure: false, sameSite: 'lax' }
+
+        res.cookie("token", token, cookieOptions)
 
         return res.status(200).json(user)
 

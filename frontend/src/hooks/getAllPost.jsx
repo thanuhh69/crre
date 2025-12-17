@@ -10,12 +10,15 @@ function getAllPost() {
     const {userData}=useSelector(state=>state.user)
   useEffect(()=>{
 const fetchPost=async ()=>{
-    try {
-        const result=await axios.get(`${serverUrl}/api/post/getAll`,{withCredentials:true})
-         dispatch(setPostData(result.data))
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const url = new URL('/api/post/getAll', serverUrl).toString()
+    const result=await axios.get(url,{withCredentials:true})
+    if (!result || !('data' in result)) { console.log('empty response', result); return }
+    const data = result.data.payload ?? result.data
+     dispatch(setPostData(data))
+  } catch (error) {
+    console.log(error)
+  }
 }
 fetchPost()
   },[dispatch,userData])

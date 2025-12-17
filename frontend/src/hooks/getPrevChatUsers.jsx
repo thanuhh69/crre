@@ -11,13 +11,16 @@ function getPrevChatUsers() {
     const {messages}=useSelector(state=>state.message)
   useEffect(()=>{
 const fetchUser=async ()=>{
-    try {
-        const result=await axios.get(`${serverUrl}/api/message/prevChats`,{withCredentials:true})
-         dispatch(setPrevChatUsers(result.data))
-         console.log(result.data)
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const url = new URL('/api/message/prevChats', serverUrl).toString()
+    const result=await axios.get(url,{withCredentials:true})
+    if (!result || !('data' in result)) { console.log('empty response', result); return }
+    const data = result.data.payload ?? result.data
+     dispatch(setPrevChatUsers(data))
+     console.log(data)
+  } catch (error) {
+    console.log(error)
+  }
 }
 fetchUser()
   },[messages])

@@ -1,0 +1,5 @@
+- [ ] Update serverUrl in frontend/src/App.jsx to localhost for development
+- [ ] Update CORS in backend/index.js to allow localhost
+- [ ] Run backend server locally
+- [ ] Run frontend dev server
+- [ ] Check console for remaining errors

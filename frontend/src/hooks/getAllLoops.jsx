@@ -12,12 +12,15 @@ function getAllLoops() {
    
   useEffect(()=>{
 const fetchloops=async ()=>{
-    try {
-        const result=await axios.get(`${serverUrl}/api/loop/getAll`,{withCredentials:true})
-         dispatch(setLoopData(result.data))
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const url = new URL('/api/loop/getAll', serverUrl).toString()
+    const result=await axios.get(url,{withCredentials:true})
+    if (!result || !('data' in result)) { console.log('empty response', result); return }
+    const data = result.data.payload ?? result.data
+     dispatch(setLoopData(data))
+  } catch (error) {
+    console.log(error)
+  }
 }
 fetchloops()
   },[dispatch,userData])

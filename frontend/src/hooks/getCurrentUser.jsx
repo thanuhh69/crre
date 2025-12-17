@@ -10,13 +10,16 @@ function getCurrentUser() {
     const {storyData}=useSelector(state=>state.story)
   useEffect(()=>{
 const fetchUser=async ()=>{
-    try {
-        const result=await axios.get(`${serverUrl}/api/user/current`,{withCredentials:true})
-         dispatch(setUserData(result.data))
-         dispatch(setCurrentUserStory(result.data.story))
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    const url = new URL('/api/user/current', serverUrl).toString()
+    const result=await axios.get(url,{withCredentials:true})
+    if (!result || !('data' in result)) { console.log('empty response', result); return }
+    const data = result.data.payload ?? result.data
+     dispatch(setUserData(data))
+     dispatch(setCurrentUserStory(data.story))
+  } catch (error) {
+    console.log(error)
+  }
 }
 fetchUser()
   },[storyData])

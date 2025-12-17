@@ -25,7 +25,7 @@ import Search from './pages/Search'
 import getAllNotifications from './hooks/getAllNotifications'
 import Notifications from './pages/Notifications'
 import { setNotificationData } from './redux/userSlice'
-export const serverUrl="https://crre.onrender.com/"
+export const serverUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$|^\s+|\s+$/g, '')
 function App() {
    getCurrentUser()
    getSuggestedUsers()

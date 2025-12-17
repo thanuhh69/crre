@@ -6,8 +6,8 @@ const server=http.createServer(app)
 
 const io=new Server(server,{
     cors:{
-        origin:"https://crre-30.vercel.app",
-        methods:["GET","POST"],
+        origin:["https://crre-30.vercel.app", "https://crre.onrender.com", "http://localhost:3000", "http://localhost:5173"],
+        methods:["GET","POST","OPTIONS"],
         credentials: true
     }
 })
