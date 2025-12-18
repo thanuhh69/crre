@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import logo from "../assets/logo.png"
+
 import { FaRegHeart } from "react-icons/fa6";
 import dp from "../assets/dp.webp"
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +27,7 @@ const {notificationData}=useSelector(state=>state.user)
   return (
     <div className={`w-[25%] hidden lg:block h-[100vh] bg-[black] border-r-2 border-gray-900  ${showNotification?"overflow-hidden":"overflow-auto"}`}>
       <div className='w-full h-[100px] flex items-center justify-between p-[20px]'>
-        <img src={logo} alt="" className='w-[80px]'/>
+        <img src="" alt="logo" className='w-[80px]'/>
         <div className='relative z-[100]' onClick={()=>setShowNotification(prev=>!prev)}>
       <FaRegHeart className='text-[white] w-[25px] h-[25px]'/>
       {notificationData?.length>0 && notificationData.some((noti)=>noti.isRead===false) && (<div className='w-[10px] h-[10px] bg-blue-600 rounded-full absolute top-0 right-[-5px]'></div>)}

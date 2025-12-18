@@ -7,9 +7,15 @@ import { getSocketId, io } from "../socket.js";
 export const uploadPost = async (req, res) => {
     try {
         const { caption, mediaType } = req.body
+        console.log('uploadPost invoked', { userId: req.userId, file: req.file && { originalname: req.file.originalname, path: req.file.path, size: req.file.size } })
         let media;
         if (req.file) {
-            media = await uploadOnCloudinary(req.file.path)
+            try {
+                media = await uploadOnCloudinary(req.file.path)
+            } catch (err) {
+                console.error('uploadOnCloudinary failed for file', req.file && req.file.path, err)
+                return res.status(500).json({ message: `cloudinary upload failed ${err.message || err}` })
+            }
         } else {
             return res.status(400).json({ message: "media is required" })
         }
@@ -22,7 +28,8 @@ export const uploadPost = async (req, res) => {
         const populatedPost = await Post.findById(post._id).populate("author", "name userName profileImage")
         return res.status(201).json(populatedPost)
     } catch (error) {
-        return res.status(500).json({ message: `uploadPost error ${error}` })
+        console.error('uploadPost error', error)
+        return res.status(500).json({ message: `uploadPost error ${error.message || error}` })
     }
 }
 

@@ -14,8 +14,9 @@ const result=await cloudinary.uploader
 fs.unlinkSync(file)
 return result.secure_url
     } catch (error) {
-        fs.unlinkSync(file)
-        console.log(error)
+        try{ if (fs.existsSync(file)) fs.unlinkSync(file) }catch(e){}
+        console.error('cloudinary upload error', error?.message || error)
+        throw error
     }
    
 }
