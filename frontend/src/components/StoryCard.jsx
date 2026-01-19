@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import dp from "../assets/dp.webp"
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import VideoPlayer from './VideoPlayer';
 import { FaEye } from "react-icons/fa6";
+import axios from 'axios';
+import { serverUrl } from '../App';
+import { setStoryList, setCurrentUserStory } from '../redux/storySlice';
 function StoryCard({storyData}) {
   const {userData}=useSelector(state=>state.user)
+  const {storyList}=useSelector(state=>state.story)
   const [showViewers,setShowViewers]=useState(false)
     const navigate=useNavigate({storyData})
     const [progress,setProgress]=useState(0)
+    const dispatch=useDispatch()
 
     useEffect(()=>{
      const interval=setInterval(()=>{
@@ -24,15 +30,35 @@ function StoryCard({storyData}) {
 
      return ()=>clearInterval(interval)
     },[navigate])
+
+    const handleDelete=async ()=>{
+      if(window.confirm("Are you sure you want to delete this story?")){
+        try {
+          await axios.delete(`${serverUrl}/api/story/delete/${storyData._id}`,{withCredentials:true})
+          const updatedStories=storyList.filter(s=>s._id!==storyData._id)
+          dispatch(setStoryList(updatedStories))
+          if(storyData.author._id === userData._id) {
+            dispatch(setCurrentUserStory(null))
+          }
+          navigate("/")
+        } catch (error) {
+          console.log(error.response)
+          alert(error.response?.data?.message || "Failed to delete story")
+        }
+      }
+    }
   return (
     <div className='w-full max-w-[500px] h-[100vh] border-x-2 border-gray-800 pt-[10px] relative flex flex-col justify-center'>
       
-      <div className='flex items-center gap-[10px] absolute top-[30px] px-[10px]'>
+      <div className='flex items-center gap-[10px] absolute top-[30px] px-[10px] justify-between w-full'>
+        <div className='flex items-center gap-[10px]'>
          <MdOutlineKeyboardBackspace className='text-white cursor-pointer w-[25px]  h-[25px] ' onClick={() => navigate(`/`)} />
         <div className='w-[30px] h-[30px] md:w-[40px] md:h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden' >
                     <img src={storyData?.author?.profileImage || dp} alt="" className='w-full object-cover' />
                   </div>
                   <div className='w-[120px] font-semibold truncate text-white '>{storyData?.author?.userName}</div>
+        </div>
+        {userData._id==storyData?.author?._id && <MdDelete className='w-[25px] h-[25px] cursor-pointer text-red-600 hover:text-red-800 mr-[10px]' onClick={handleDelete} title="Delete story"/>}
       </div>
 
 <div className='absolute top-[10px]  w-full h-[5px] bg-gray-900'>

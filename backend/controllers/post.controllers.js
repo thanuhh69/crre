@@ -149,3 +149,38 @@ export const saved = async (req, res) => {
         return res.status(500).json({ message: `saved  error ${error}` })
     }
 }
+
+export const deletePost = async (req, res) => {
+    try {
+        const postId = req.params.postId
+        const post = await Post.findById(postId)
+        
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" })
+        }
+        
+        // Check if the user is the author of the post
+        if (post.author.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Unauthorized: You can only delete your own posts" })
+        }
+        
+        // Remove post from user's posts array
+        const user = await User.findById(req.userId)
+        user.posts = user.posts.filter(id => id.toString() !== postId.toString())
+        await user.save()
+        
+        // Delete related notifications (optional but recommended)
+        await Notification.deleteMany({ post: postId })
+        
+        // Delete the post
+        await Post.findByIdAndDelete(postId)
+        
+        // Emit socket event to update all clients
+        io.emit("deletedPost", { postId })
+        
+        return res.status(200).json({ message: "Post deleted successfully", postId })
+    } catch (error) {
+        console.error('deletePost error', error)
+        return res.status(500).json({ message: `delete post error ${error.message || error}` })
+    }
+}
