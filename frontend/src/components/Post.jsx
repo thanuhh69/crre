@@ -8,6 +8,7 @@ import { MdOutlineComment } from "react-icons/md";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { GoBookmarkFill } from "react-icons/go";
 import { IoSendSharp } from "react-icons/io5";
+import { MdDelete } from "react-icons/md";
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { setPostData } from '../redux/postSlice';
@@ -54,6 +55,19 @@ const dispatch=useDispatch()
       console.log(error.response)
     }
   }
+
+  const handleDelete=async ()=>{
+    if(window.confirm("Are you sure you want to delete this post?")){
+      try {
+        await axios.delete(`${serverUrl}/api/post/delete/${post._id}`,{withCredentials:true})
+        const updatedPosts=postData.filter(p=>p._id!==post._id)
+        dispatch(setPostData(updatedPosts))
+      } catch (error) {
+        console.log(error.response)
+        alert(error.response?.data?.message || "Failed to delete post")
+      }
+    }
+  }
   
   useEffect(()=>{
     socket?.on("likedPost",(updatedData)=>{
@@ -64,9 +78,14 @@ socket?.on("commentedPost",(updatedData)=>{
      const updatedPosts=postData.map(p=>p._id==updatedData.postId?{...p,comments:updatedData.comments}:p)
      dispatch(setPostData(updatedPosts))
     })
+socket?.on("deletedPost",(data)=>{
+     const updatedPosts=postData.filter(p=>p._id!==data.postId)
+     dispatch(setPostData(updatedPosts))
+    })
 
     return ()=>{socket?.off("likedPost")
-               socket?.off("CommentedPost")}
+               socket?.off("CommentedPost")
+               socket?.off("deletedPost")}
   },[socket,postData,dispatch])
   return (
     <div className='w-[90%]   flex flex-col gap-[10px] bg-white items-center shadow-2xl shadow-[#00000058] rounded-2xl pb-[20px]'>
@@ -78,7 +97,7 @@ socket?.on("commentedPost",(updatedData)=>{
           <div className='w-[150px] font-semibold truncate'>{post.author.userName}</div>
         </div>
        {userData._id!=post.author._id &&  <FollowButton tailwind={'px-[10px] minw-[60px] md:min-w-[100px] py-[5px] h-[30px] md:h-[40px] bg-[black] text-white rounded-2xl text-[14px] md:text-[16px]'} targetUserId={post.author._id}/>}
-       
+       {userData._id==post.author._id && <MdDelete className='w-[25px] h-[25px] cursor-pointer text-red-600 hover:text-red-800' onClick={handleDelete} title="Delete post"/>}
       </div>
       <div className='w-[90%]   flex  items-center justify-center '>
         {post.mediaType == "image" && <div className='w-[90%]    flex  items-center justify-center   '>

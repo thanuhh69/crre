@@ -117,3 +117,38 @@ export const getAllLoops=async (req,res)=>{
         return res.status(500).json({message:`get all loop error ${error}`})
     }
 }
+
+export const deleteLoop = async (req, res) => {
+    try {
+        const loopId = req.params.loopId
+        const loop = await Loop.findById(loopId)
+        
+        if (!loop) {
+            return res.status(404).json({ message: "Loop not found" })
+        }
+        
+        // Check if the user is the author of the loop
+        if (loop.author.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Unauthorized: You can only delete your own loops" })
+        }
+        
+        // Remove loop from user's loops array
+        const user = await User.findById(req.userId)
+        user.loops = user.loops.filter(id => id.toString() !== loopId.toString())
+        await user.save()
+        
+        // Delete related notifications
+        await Notification.deleteMany({ loop: loopId })
+        
+        // Delete the loop
+        await Loop.findByIdAndDelete(loopId)
+        
+        // Emit socket event to update all clients
+        io.emit("deletedLoop", { loopId })
+        
+        return res.status(200).json({ message: "Loop deleted successfully", loopId })
+    } catch (error) {
+        console.error('deleteLoop error', error)
+        return res.status(500).json({ message: `delete loop error ${error.message || error}` })
+    }
+}

@@ -90,3 +90,34 @@ export const getAllStories=async (req,res)=>{
            return res.status(500).json({ message: "All story get error" })
     }
 }
+
+export const deleteStory = async (req, res) => {
+    try {
+        const storyId = req.params.storyId
+        const story = await Story.findById(storyId)
+        
+        if (!story) {
+            return res.status(404).json({ message: "Story not found" })
+        }
+        
+        // Check if the user is the author of the story
+        if (story.author.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Unauthorized: You can only delete your own stories" })
+        }
+        
+        // Set user's story field to null
+        const user = await User.findById(req.userId)
+        if (user.story && user.story.toString() === storyId.toString()) {
+            user.story = null
+            await user.save()
+        }
+        
+        // Delete the story
+        await Story.findByIdAndDelete(storyId)
+        
+        return res.status(200).json({ message: "Story deleted successfully", storyId })
+    } catch (error) {
+        console.error('deleteStory error', error)
+        return res.status(500).json({ message: `delete story error ${error.message || error}` })
+    }
+}

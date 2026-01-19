@@ -10,6 +10,7 @@ import { GoHeart } from "react-icons/go";
 import { GoHeartFill } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
 import { MdOutlineComment } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { setLoopData } from '../redux/loopSlice';
 import axios from 'axios';
 import { serverUrl } from '../App';
@@ -74,6 +75,19 @@ const handleLike=async ()=>{
       console.log(error)
     }
   }
+
+  const handleDelete=async ()=>{
+    if(window.confirm("Are you sure you want to delete this loop?")){
+      try {
+        await axios.delete(`${serverUrl}/api/loop/delete/${loop._id}`,{withCredentials:true})
+        const updatedLoops=loopData.filter(p=>p._id!==loop._id)
+        dispatch(setLoopData(updatedLoops))
+      } catch (error) {
+        console.log(error.response)
+        alert(error.response?.data?.message || "Failed to delete loop")
+      }
+    }
+  }
  
 
 useEffect(()=>{
@@ -127,9 +141,14 @@ if(showComment){
          const updatedLoops=loopData.map(p=>p._id==updatedData.loopId?{...p,comments:updatedData.comments}:p)
          dispatch(setLoopData(updatedLoops))
         })
+    socket?.on("deletedLoop",(data)=>{
+         const updatedLoops=loopData.filter(p=>p._id!==data.loopId)
+         dispatch(setLoopData(updatedLoops))
+        })
     
         return ()=>{socket?.off("likedLoop")
-                   socket?.off("commentedLoop")}
+                   socket?.off("commentedLoop")
+                   socket?.off("deletedLoop")}
       },[socket,loopData,dispatch])
     return (
         <div className='w-full lg:w-[480px] h-[100vh] flex items-center justify-center border-l-2 border-r-2 border-gray-800  relative overflow-hidden'>
@@ -185,7 +204,8 @@ if(showComment){
           </div>
           <div className='w-[120px] font-semibold truncate text-white '>{loop.author.userName}</div>
        
-        <FollowButton targetUserId={loop.author?._id} tailwind={"px-[10px] py-[5px] text-white border-2 text-[14px] rounded-2xl border-white"}/>
+        {userData._id!=loop.author._id && <FollowButton targetUserId={loop.author?._id} tailwind={"px-[10px] py-[5px] text-white border-2 text-[14px] rounded-2xl border-white"}/>}
+        {userData._id==loop.author._id && <MdDelete className='w-[20px] h-[20px] cursor-pointer text-red-600 hover:text-red-800' onClick={handleDelete} title="Delete loop"/>}
          </div>
          <div className='text-white px-[10px]'>
             {loop.caption}
