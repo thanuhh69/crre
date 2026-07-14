@@ -20,6 +20,8 @@ function Upload() {
     const [backendMedia, setBackendMedia] = useState(null)
     const [mediaType, setMediaType] = useState("")
     const [caption,setCaption]=useState("")
+    const [githubLink,setGithubLink]=useState("")
+    const [linkedinLink,setLinkedinLink]=useState("")
     const mediaInput = useRef()
     const dispatch=useDispatch()
     const {postData}=useSelector(state=>state.post)
@@ -72,6 +74,8 @@ const uploadLoop=async ()=>{
         const formData=new FormData()
         formData.append("caption",caption)
         formData.append("media",backendMedia)
+        formData.append("githubLink",githubLink)
+        formData.append("linkedinLink",linkedinLink)
         const result=await axios.post(`${serverUrl}/api/loop/upload`,formData,{withCredentials:true})
          dispatch(setLoopData([...loopData,result.data]))
          setLoading(false)
@@ -115,17 +119,24 @@ const handleUpload=()=>{
             </div>}
 
             {frontendMedia &&
-                <div className='w-[80%] max-w-[500px] h-[250px]  flex flex-col items-center justify-center  mt-[15vh]'>
-             {mediaType=="image" && <div className='w-[80%] max-w-[500px] h-[250px]  flex flex-col items-center justify-center  mt-[5vh] '>
-                <img src={frontendMedia} alt="" className='h-[60%] rounded-2xl'/>
+                <div className='w-[80%] max-w-[500px] min-h-[250px] flex flex-col items-center justify-center mt-[5vh]'>
+             {mediaType=="image" && <div className='w-[80%] max-w-[500px] flex flex-col items-center justify-center mt-[2vh] '>
+                <img src={frontendMedia} alt="" className='h-[150px] object-cover rounded-2xl'/>
                 {uploadType!="story" &&  <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white mt-[20px]' placeholder='write caption' onChange={(e)=>setCaption(e.target.value)} value={caption}/>}
                
                 </div>}
 
-                 {mediaType=="video" && <div className='w-[80%] max-w-[500px] h-[250px]  flex flex-col items-center justify-center  mt-[5vh] '>
-                <VideoPlayer media={frontendMedia}/>
+                  {mediaType=="video" && <div className='w-[80%] max-w-[500px] flex flex-col items-center justify-center mt-[2vh] '>
+                <div className="h-[150px] flex items-center justify-center overflow-hidden rounded-2xl">
+                    <VideoPlayer media={frontendMedia}/>
+                </div>
                 {uploadType!="story" &&  <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white mt-[20px]' placeholder='write caption' onChange={(e)=>setCaption(e.target.value)} value={caption}/>}
-               
+                {uploadType=="loop" && (
+                    <div className="w-full flex flex-col gap-3 mt-4">
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='GitHub Repository Link' onChange={(e)=>setGithubLink(e.target.value)} value={githubLink}/>
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='LinkedIn Profile Link' onChange={(e)=>setLinkedinLink(e.target.value)} value={linkedinLink}/>
+                    </div>
+                )}
                 </div>}
 
 

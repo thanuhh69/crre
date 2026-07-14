@@ -112,14 +112,7 @@ function Profile() {
 
                 {profileData?._id != userData._id
                     &&
-                    <>
-
-                        <FollowButton tailwind={'px-[10px] min-w-[150px] py-[5px] h-[40px] bg-[white] cursor-pointer rounded-2xl'} targetUserId={profileData?._id} onFollowChange={handleProfile} />
-                        <button className='px-[10px] min-w-[150px] py-[5px] h-[40px] bg-[white] cursor-pointer rounded-2xl' onClick={()=>{
-                            dispatch(setSelectedUser(profileData))
-                            navigate("/messageArea")
-                        }}>Message</button>
-                    </>
+                    <FollowButton tailwind={'px-[10px] min-w-[150px] py-[5px] h-[40px] bg-[white] cursor-pointer rounded-2xl'} targetUserId={profileData?._id} onFollowChange={handleProfile} />
                 }
             </div>
 

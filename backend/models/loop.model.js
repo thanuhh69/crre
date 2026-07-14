@@ -13,6 +13,12 @@ const loopSchema=new mongoose.Schema({
         caption:{
             type:String
         },
+        githubLink:{
+            type:String
+        },
+        linkedinLink:{
+            type:String
+        },
         likes:[
             {
             type: mongoose.Schema.Types.ObjectId,

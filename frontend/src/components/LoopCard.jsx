@@ -15,6 +15,7 @@ import { setLoopData } from '../redux/loopSlice';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { IoSendSharp } from "react-icons/io5";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 function LoopCard({ loop }) {
     const videoRef = useRef()
 const [isPlaying,setIsPlaying]=useState(true)
@@ -197,7 +198,7 @@ if(showComment){
 </div>
             </div>
 
-            <div className='w-full absolute h-[100px] bottom-[10px] p-[10px] flex flex-col gap-[10px]'>
+            <div className='w-full absolute h-auto min-h-[100px] bottom-[10px] p-[10px] flex flex-col gap-[10px] bg-gradient-to-t from-black/65 via-black/40 to-transparent z-[10]'>
 <div className='flex items-center gap-[5px]'>
           <div className='w-[30px] h-[30px] md:w-[40px] md:h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden' >
             <img src={loop.author?.profileImage || dp} alt="" className='w-full object-cover' />
@@ -210,6 +211,22 @@ if(showComment){
          <div className='text-white px-[10px]'>
             {loop.caption}
          </div>
+         {(loop.githubLink || loop.linkedinLink) && (
+            <div className='flex gap-[10px] mt-[2px] px-[10px] z-[20]'>
+               {loop.githubLink && (
+                   <a href={loop.githubLink.startsWith('http') ? loop.githubLink : `https://${loop.githubLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[13px] bg-gray-900/90 hover:bg-gray-800 text-white px-[10px] py-[4px] rounded-full transition-colors border border-gray-700 shadow-md'>
+                       <FaGithub className='w-[16px] h-[16px]' />
+                       <span>GitHub</span>
+                   </a>
+               )}
+               {loop.linkedinLink && (
+                   <a href={loop.linkedinLink.startsWith('http') ? loop.linkedinLink : `https://${loop.linkedinLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[13px] bg-blue-900/90 hover:bg-blue-800 text-white px-[10px] py-[4px] rounded-full transition-colors border border-blue-700 shadow-md'>
+                       <FaLinkedin className='w-[16px] h-[16px]' />
+                       <span>LinkedIn</span>
+                   </a>
+               )}
+            </div>
+         )}
 
          <div className='absolute right-0 flex flex-col gap-[20px] text-white  bottom-[150px] justify-center px-[10px] '>
 <div className='flex flex-col items-center cursor-pointer'>

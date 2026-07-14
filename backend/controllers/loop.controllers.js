@@ -6,7 +6,7 @@ import { getSocketId, io } from "../socket.js";
 
 export const uploadLoop=async (req,res)=>{
 try {
-    const {caption}=req.body
+    const {caption, githubLink, linkedinLink}=req.body
     let media;
     if(req.file){
         media=await uploadOnCloudinary(req.file.path)
@@ -14,7 +14,7 @@ try {
         return res.status(400).json({message:"media is required"})
     }
     const loop=await Loop.create({
-        caption,media,author:req.userId
+        caption,media,author:req.userId,githubLink,linkedinLink
     })
     const user=await User.findById(req.userId)
     user.loops.push(loop._id)
