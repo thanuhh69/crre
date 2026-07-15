@@ -15,7 +15,7 @@ import { setLoopData } from '../redux/loopSlice';
 import axios from 'axios';
 import { serverUrl } from '../App';
 import { IoSendSharp } from "react-icons/io5";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 function LoopCard({ loop }) {
     const videoRef = useRef()
 const [isPlaying,setIsPlaying]=useState(true)
@@ -198,31 +198,54 @@ if(showComment){
 </div>
             </div>
 
-            <div className='w-full absolute h-auto min-h-[100px] bottom-[10px] p-[10px] flex flex-col gap-[10px] bg-gradient-to-t from-black/65 via-black/40 to-transparent z-[10]'>
+            <div className='w-full absolute h-auto min-h-[100px] bottom-[10px] p-[10px] flex flex-col gap-[8px] bg-gradient-to-t from-black/85 via-black/55 to-transparent z-[10] text-left'>
 <div className='flex items-center gap-[5px]'>
           <div className='w-[30px] h-[30px] md:w-[40px] md:h-[40px] border-2 border-black rounded-full cursor-pointer overflow-hidden' >
             <img src={loop.author?.profileImage || dp} alt="" className='w-full object-cover' />
           </div>
-          <div className='w-[120px] font-semibold truncate text-white '>{loop.author.userName}</div>
+          <div className='flex flex-col truncate'>
+            <div className='w-[120px] font-semibold truncate text-white '>{loop.author.name || loop.author.userName}</div>
+            <div className='text-[11px] text-gray-300 truncate'>
+              {loop.author.department ? `${loop.author.department} • ` : ''}{loop.author.year}
+            </div>
+          </div>
        
         {userData._id!=loop.author._id && <FollowButton targetUserId={loop.author?._id} tailwind={"px-[10px] py-[5px] text-white border-2 text-[14px] rounded-2xl border-white"}/>}
         {userData._id==loop.author._id && <MdDelete className='w-[20px] h-[20px] cursor-pointer text-red-600 hover:text-red-800' onClick={handleDelete} title="Delete loop"/>}
          </div>
-         <div className='text-white px-[10px]'>
+         {loop.projectTitle && (
+             <div className='text-white font-bold text-[17px] px-[10px]'>
+                 {loop.projectTitle}
+             </div>
+         )}
+         <div className='text-white px-[10px] text-[14px]'>
             {loop.caption}
          </div>
-         {(loop.githubLink || loop.linkedinLink) && (
-            <div className='flex gap-[10px] mt-[2px] px-[10px] z-[20]'>
+         {loop.techStack && (
+             <div className='flex flex-wrap gap-[5px] px-[10px] mt-[1px]'>
+                 {loop.techStack.split(',').map((tech, i) => (
+                     <span key={i} className='bg-white/20 text-white px-[6px] py-[1px] rounded-md text-[11px] font-medium'>{tech.trim()}</span>
+                 ))}
+             </div>
+         )}
+         {(loop.githubLink || loop.linkedinLink || loop.portfolioLink) && (
+            <div className='flex flex-wrap gap-[8px] mt-[4px] px-[10px] z-[20]'>
                {loop.githubLink && (
-                   <a href={loop.githubLink.startsWith('http') ? loop.githubLink : `https://${loop.githubLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[13px] bg-gray-900/90 hover:bg-gray-800 text-white px-[10px] py-[4px] rounded-full transition-colors border border-gray-700 shadow-md'>
-                       <FaGithub className='w-[16px] h-[16px]' />
+                   <a href={loop.githubLink.startsWith('http') ? loop.githubLink : `https://${loop.githubLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[12px] bg-gray-900/90 hover:bg-gray-800 text-white px-[8px] py-[4px] rounded-full transition-colors border border-gray-700 shadow-md'>
+                       <FaGithub className='w-[14px] h-[14px]' />
                        <span>GitHub</span>
                    </a>
                )}
                {loop.linkedinLink && (
-                   <a href={loop.linkedinLink.startsWith('http') ? loop.linkedinLink : `https://${loop.linkedinLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[13px] bg-blue-900/90 hover:bg-blue-800 text-white px-[10px] py-[4px] rounded-full transition-colors border border-blue-700 shadow-md'>
-                       <FaLinkedin className='w-[16px] h-[16px]' />
+                   <a href={loop.linkedinLink.startsWith('http') ? loop.linkedinLink : `https://${loop.linkedinLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[12px] bg-blue-900/90 hover:bg-blue-800 text-white px-[8px] py-[4px] rounded-full transition-colors border border-blue-700 shadow-md'>
+                       <FaLinkedin className='w-[14px] h-[14px]' />
                        <span>LinkedIn</span>
+                   </a>
+               )}
+               {loop.portfolioLink && (
+                   <a href={loop.portfolioLink.startsWith('http') ? loop.portfolioLink : `https://${loop.portfolioLink}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[6px] text-[12px] bg-teal-900/90 hover:bg-teal-800 text-white px-[8px] py-[4px] rounded-full transition-colors border border-teal-700 shadow-md'>
+                       <FaGlobe className='w-[14px] h-[14px]' />
+                       <span>Website</span>
                    </a>
                )}
             </div>

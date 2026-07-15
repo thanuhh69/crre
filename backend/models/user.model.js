@@ -31,6 +31,46 @@ const userSchema=new mongoose.Schema({
     gender:{
         type:String
     },
+     department: {
+        type: String,
+        default: ""
+    },
+     year: {
+        type: String,
+        default: "1st Year"
+    },
+     rollNumber: {
+        type: String,
+        default: ""
+    },
+     github: {
+        type: String,
+        default: ""
+    },
+     linkedin: {
+        type: String,
+        default: ""
+    },
+     portfolio: {
+        type: String,
+        default: ""
+    },
+     skills: {
+        type: String,
+        default: ""
+    },
+     programmingLanguages: {
+        type: String,
+        default: ""
+    },
+     achievements: {
+        type: String,
+        default: ""
+    },
+     interests: {
+        type: String,
+        default: ""
+    },
     followers:[
     {  type:mongoose.Schema.Types.ObjectId,
         ref:"User"

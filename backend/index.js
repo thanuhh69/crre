@@ -8,7 +8,6 @@ import userRouter from "./routes/user.routes.js"
 import postRouter from "./routes/post.routes.js"
 import loopRouter from "./routes/loop.routes.js"
 import storyRouter from "./routes/story.routes.js"
-import messageRouter from "./routes/message.routes.js"
 import { app, server } from "./socket.js"
 dotenv.config()
 
@@ -25,7 +24,6 @@ app.use("/api/user",userRouter)
 app.use("/api/post",postRouter)
 app.use("/api/loop",loopRouter)
 app.use("/api/story",storyRouter)
-app.use("/api/message",messageRouter)
 
 
 server.listen(port , ()=>{

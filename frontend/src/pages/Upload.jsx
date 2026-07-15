@@ -22,6 +22,17 @@ function Upload() {
     const [caption,setCaption]=useState("")
     const [githubLink,setGithubLink]=useState("")
     const [linkedinLink,setLinkedinLink]=useState("")
+    const [category, setCategory] = useState("Project")
+    const [projectTitle, setProjectTitle] = useState("")
+    const [techStack, setTechStack] = useState("")
+    const [githubRepo, setGithubRepo] = useState("")
+    const [liveDemo, setLiveDemo] = useState("")
+    const [linkedinPost, setLinkedinPost] = useState("")
+    const [certificateIssuer, setCertificateIssuer] = useState("")
+    const [certificateDate, setCertificateDate] = useState("")
+    const [backendPdf, setBackendPdf] = useState(null)
+    const [frontendPdfName, setFrontendPdfName] = useState("")
+    const [portfolioLink, setPortfolioLink] = useState("")
     const mediaInput = useRef()
     const dispatch=useDispatch()
     const {postData}=useSelector(state=>state.post)
@@ -40,13 +51,34 @@ function Upload() {
         setFrontendMedia(URL.createObjectURL(file))
     }
 
+    const handlePdfChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            setBackendPdf(file)
+            setFrontendPdfName(file.name)
+        }
+    }
+
 const uploadPost=async ()=>{
    
     try {
         const formData=new FormData()
         formData.append("caption",caption)
-        formData.append("mediaType",mediaType)
-        formData.append("media",backendMedia)
+        formData.append("mediaType",mediaType || (backendMedia ? "image" : "none"))
+        if (backendMedia) {
+            formData.append("media",backendMedia)
+        }
+        formData.append("category",category)
+        formData.append("projectTitle",projectTitle)
+        formData.append("techStack",techStack)
+        formData.append("githubRepo",githubRepo)
+        formData.append("liveDemo",liveDemo)
+        formData.append("linkedinPost",linkedinPost)
+        formData.append("certificateIssuer",certificateIssuer)
+        formData.append("certificateDate",certificateDate)
+        if (backendPdf) {
+            formData.append("pdf",backendPdf)
+        }
         const result=await axios.post(`${serverUrl}/api/post/upload`,formData,{withCredentials:true})
        dispatch(setPostData([...postData,result.data]))
        setLoading(false)
@@ -76,6 +108,9 @@ const uploadLoop=async ()=>{
         formData.append("media",backendMedia)
         formData.append("githubLink",githubLink)
         formData.append("linkedinLink",linkedinLink)
+        formData.append("projectTitle",projectTitle)
+        formData.append("techStack",techStack)
+        formData.append("portfolioLink",portfolioLink)
         const result=await axios.post(`${serverUrl}/api/loop/upload`,formData,{withCredentials:true})
          dispatch(setLoopData([...loopData,result.data]))
          setLoading(false)
@@ -112,37 +147,97 @@ const handleUpload=()=>{
                 <div className={`${uploadType == "loop" ? "bg-black text-white shadow-2xl shadow-black" : ""}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold hover:bg-black rounded-full hover:text-white cursor-pointer hover:shadow-2xl hover:shadow-black`} onClick={() => setUploadType("loop")}>Loop</div>
             </div>
 
-            {!frontendMedia && <div className='w-[80%] max-w-[500px] h-[250px] bg-[#0e1316] border-gray-800 border-2 flex flex-col items-center justify-center gap-[8px] mt-[15vh] rounded-2xl cursor-pointer hover:bg-[#353a3d]' onClick={() => mediaInput.current.click()}>
-                <input type="file" accept={uploadType=="loop"?"video/*":""} hidden ref={mediaInput} onChange={handleMedia} />
-                <FiPlusSquare className='text-white cursor-pointer w-[25px] h-[25px]' />
-                <div className='text-white text-[19px] font-semibold'>Upload {uploadType}</div>
-            </div>}
+             {!frontendMedia && (
+                <div className="w-[90%] max-w-[500px] flex flex-col gap-4 mt-6">
+                    {uploadType === "post" && (
+                        <div className="w-full flex flex-col gap-2">
+                            <label className="text-white font-semibold">Select Post Category:</label>
+                            <select 
+                                className="w-full bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold p-3 outline-none" 
+                                value={category} 
+                                onChange={(e) => setCategory(e.target.value)}
+                            >
+                                {["Project", "Certificate", "Research Paper", "Internship", "Workshop", "Hackathon", "Achievement", "Technical Blog", "Event"].map((cat) => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    <div className='w-full h-[200px] bg-[#0e1316] border-gray-800 border-2 flex flex-col items-center justify-center gap-[8px] rounded-2xl cursor-pointer hover:bg-[#353a3d]' onClick={() => mediaInput.current.click()}>
+                        <input type="file" accept={uploadType=="loop"?"video/*":""} hidden ref={mediaInput} onChange={handleMedia} />
+                        <FiPlusSquare className='text-white cursor-pointer w-[25px] h-[25px]' />
+                        <div className='text-white text-[19px] font-semibold'>Upload visual thumbnail / video</div>
+                    </div>
+                </div>
+             )}
 
             {frontendMedia &&
-                <div className='w-[80%] max-w-[500px] min-h-[250px] flex flex-col items-center justify-center mt-[5vh]'>
-             {mediaType=="image" && <div className='w-[80%] max-w-[500px] flex flex-col items-center justify-center mt-[2vh] '>
-                <img src={frontendMedia} alt="" className='h-[150px] object-cover rounded-2xl'/>
-                {uploadType!="story" &&  <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white mt-[20px]' placeholder='write caption' onChange={(e)=>setCaption(e.target.value)} value={caption}/>}
-               
+                <div className='w-[80%] max-w-[500px] min-h-[250px] flex flex-col items-center justify-center mt-[2vh] overflow-y-auto pb-[50px]'>
+             {mediaType=="image" && <div className='w-full flex flex-col items-center justify-center mt-[2vh] '>
+                <img src={frontendMedia} alt="" className='h-[150px] object-cover rounded-2xl mb-4'/>
                 </div>}
 
-                  {mediaType=="video" && <div className='w-[80%] max-w-[500px] flex flex-col items-center justify-center mt-[2vh] '>
-                <div className="h-[150px] flex items-center justify-center overflow-hidden rounded-2xl">
+                  {mediaType=="video" && <div className='w-full flex flex-col items-center justify-center mt-[2vh] '>
+                <div className="h-[150px] flex items-center justify-center overflow-hidden rounded-2xl mb-4">
                     <VideoPlayer media={frontendMedia}/>
                 </div>
-                {uploadType!="story" &&  <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white mt-[20px]' placeholder='write caption' onChange={(e)=>setCaption(e.target.value)} value={caption}/>}
-                {uploadType=="loop" && (
-                    <div className="w-full flex flex-col gap-3 mt-4">
+                </div>}
+
+                {/* Form Fields based on Category/UploadType */}
+                {uploadType === "post" && (
+                    <div className="w-full flex flex-col gap-3">
+                        {/* Common fields */}
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Write caption/description' onChange={(e)=>setCaption(e.target.value)} value={caption}/>
+                        
+                        {/* Project fields */}
+                        {["Project", "Workshop", "Hackathon", "Technical Blog", "Event"].includes(category) && (
+                            <>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Project/Post Title' onChange={(e)=>setProjectTitle(e.target.value)} value={projectTitle}/>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Tech Stack (comma separated)' onChange={(e)=>setTechStack(e.target.value)} value={techStack}/>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='GitHub Repository Link' onChange={(e)=>setGithubRepo(e.target.value)} value={githubRepo}/>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Live Demo Link' onChange={(e)=>setLiveDemo(e.target.value)} value={liveDemo}/>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='LinkedIn Related Post Link' onChange={(e)=>setLinkedinPost(e.target.value)} value={linkedinPost}/>
+                            </>
+                        )}
+
+                        {/* Certificate fields */}
+                        {["Certificate", "Internship", "Research Paper", "Achievement"].includes(category) && (
+                            <>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Certificate/Achievement Title' onChange={(e)=>setProjectTitle(e.target.value)} value={projectTitle}/>
+                                <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Issuer (e.g. Google, Coursera, College)' onChange={(e)=>setCertificateIssuer(e.target.value)} value={certificateIssuer}/>
+                                <div className="w-full flex flex-col gap-1">
+                                    <label className="text-gray-400 text-[13px]">Issue Date:</label>
+                                    <input type='date' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white bg-black' onChange={(e)=>setCertificateDate(e.target.value)} value={certificateDate}/>
+                                </div>
+                            </>
+                        )}
+
+                        {/* Optional PDF File */}
+                        <div className="w-full mt-3 flex flex-col gap-2">
+                            <label className="text-white text-[14px] font-semibold">Upload PDF Document (Optional):</label>
+                            <div className="flex items-center gap-[10px]">
+                                <label className="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-xl cursor-pointer text-[14px]">
+                                    Choose PDF
+                                    <input type="file" accept="application/pdf" className="hidden" onChange={handlePdfChange} />
+                                </label>
+                                {frontendPdfName && <span className="text-green-400 text-[14px] truncate max-w-[200px]">{frontendPdfName}</span>}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {uploadType === "loop" && (
+                    <div className="w-full flex flex-col gap-3">
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Write caption/description' onChange={(e)=>setCaption(e.target.value)} value={caption}/>
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Project Title' onChange={(e)=>setProjectTitle(e.target.value)} value={projectTitle}/>
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Technologies Used (comma separated)' onChange={(e)=>setTechStack(e.target.value)} value={techStack}/>
                         <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='GitHub Repository Link' onChange={(e)=>setGithubLink(e.target.value)} value={githubLink}/>
                         <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='LinkedIn Profile Link' onChange={(e)=>setLinkedinLink(e.target.value)} value={linkedinLink}/>
+                        <input type='text' className='w-full border-b-gray-400 border-b-2 outline-none px-[10px] py-[5px] text-white' placeholder='Portfolio Website Link (optional)' onChange={(e)=>setPortfolioLink(e.target.value)} value={portfolioLink}/>
                     </div>
                 )}
                 </div>}
 
-
-               
-
-                </div>}
                 {frontendMedia && <button className='px-[10px] w-[60%] max-w-[400px]   py-[5px] h-[50px] bg-[white] mt-[50px] cursor-pointer rounded-2xl' onClick={handleUpload}>{loading?<ClipLoader size={30} color='black'/>:`Upload ${uploadType}` }</button>}
 
         </div>

@@ -6,7 +6,7 @@ import { getSocketId, io } from "../socket.js";
 
 export const uploadLoop=async (req,res)=>{
 try {
-    const {caption, githubLink, linkedinLink}=req.body
+    const {caption, githubLink, linkedinLink, projectTitle, techStack, portfolioLink}=req.body
     let media;
     if(req.file){
         media=await uploadOnCloudinary(req.file.path)
@@ -14,12 +14,12 @@ try {
         return res.status(400).json({message:"media is required"})
     }
     const loop=await Loop.create({
-        caption,media,author:req.userId,githubLink,linkedinLink
+        caption,media,author:req.userId,githubLink,linkedinLink,projectTitle,techStack,portfolioLink
     })
     const user=await User.findById(req.userId)
     user.loops.push(loop._id)
     await user.save()
-    const populatedLoop=await Loop.findById(loop._id).populate("author","name userName profileImage")
+    const populatedLoop=await Loop.findById(loop._id).populate("author","name userName profileImage department year rollNumber github linkedin portfolio")
     return res.status(201).json(populatedLoop)
 } catch (error) {
     return res.status(500).json({message:`uploadloop error ${error}`})
@@ -110,7 +110,7 @@ export const comment=async (req,res)=>{
 
 export const getAllLoops=async (req,res)=>{
     try {
-        const loops=await Loop.find({}).populate("author","name userName profileImage")
+        const loops=await Loop.find({}).populate("author","name userName profileImage department year rollNumber github linkedin portfolio")
         .populate("comments.author")
         return res.status(200).json(loops)
     } catch (error) {

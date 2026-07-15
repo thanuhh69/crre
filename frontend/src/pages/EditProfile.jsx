@@ -20,6 +20,16 @@ function EditProfile() {
     const [bio, setBio] = useState(userData.bio || "")
     const [profession, setProfession] = useState(userData.profession || "")
     const [gender, setGender] = useState(userData.gender || "")
+    const [department, setDepartment] = useState(userData.department || "")
+    const [year, setYear] = useState(userData.year || "1st Year")
+    const [rollNumber, setRollNumber] = useState(userData.rollNumber || "")
+    const [github, setGithub] = useState(userData.github || "")
+    const [linkedin, setLinkedin] = useState(userData.linkedin || "")
+    const [portfolio, setPortfolio] = useState(userData.portfolio || "")
+    const [skills, setSkills] = useState(userData.skills || "")
+    const [programmingLanguages, setProgrammingLanguages] = useState(userData.programmingLanguages || "")
+    const [achievements, setAchievements] = useState(userData.achievements || "")
+    const [interests, setInterests] = useState(userData.interests || "")
     const dispatch=useDispatch()
     const [loading,setLoading]=useState(false)
     const handleImage = (e) => {
@@ -37,6 +47,16 @@ function EditProfile() {
              formdata.append("bio",bio)
               formdata.append("profession",profession)
                formdata.append("gender",gender)
+               formdata.append("department",department)
+               formdata.append("year",year)
+               formdata.append("rollNumber",rollNumber)
+               formdata.append("github",github)
+               formdata.append("linkedin",linkedin)
+               formdata.append("portfolio",portfolio)
+               formdata.append("skills",skills)
+               formdata.append("programmingLanguages",programmingLanguages)
+               formdata.append("achievements",achievements)
+               formdata.append("interests",interests)
                if(backendImage){
                 formdata.append("profileImage",backendImage)
                }
@@ -69,8 +89,24 @@ function EditProfile() {
             <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Bio' onChange={(e)=>setBio(e.target.value)} value={bio}/>
             <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Profession' onChange={(e)=>setProfession(e.target.value)} value={profession}/>
             <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Gender' onChange={(e)=>setGender(e.target.value)} value={gender}/>
+            
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Department (e.g. CSE)' onChange={(e)=>setDepartment(e.target.value)} value={department}/>
+            <select className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' onChange={(e)=>setYear(e.target.value)} value={year}>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+            </select>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Roll Number' onChange={(e)=>setRollNumber(e.target.value)} value={rollNumber}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='GitHub Profile Link' onChange={(e)=>setGithub(e.target.value)} value={github}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='LinkedIn Profile Link' onChange={(e)=>setLinkedin(e.target.value)} value={linkedin}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Portfolio Website Link' onChange={(e)=>setPortfolio(e.target.value)} value={portfolio}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Skills (comma separated, e.g. React, Node)' onChange={(e)=>setSkills(e.target.value)} value={skills}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Programming Languages (comma separated, e.g. Java, Python)' onChange={(e)=>setProgrammingLanguages(e.target.value)} value={programmingLanguages}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Achievements' onChange={(e)=>setAchievements(e.target.value)} value={achievements}/>
+            <input type="text" className='w-[90%] max-w-[600px] h-[60px] bg-[#0a1010] border-2 border-gray-700 rounded-2xl text-white font-semibold px-[20px] outline-none ' placeholder='Interests' onChange={(e)=>setInterests(e.target.value)} value={interests}/>
 
-            <button className='px-[10px] w-[60%] max-w-[400px]   py-[5px] h-[50px] bg-[white] cursor-pointer rounded-2xl' onClick={handleEditProfile}>{loading?<ClipLoader size={30} color='black'/>:"Save Profile"}</button>
+            <button className='px-[10px] w-[60%] max-w-[400px]   py-[5px] h-[50px] bg-[white] mt-[20px] cursor-pointer rounded-2xl' onClick={handleEditProfile}>{loading?<ClipLoader size={30} color='black'/>:"Save Profile"}</button>
         </div>
     )
 }

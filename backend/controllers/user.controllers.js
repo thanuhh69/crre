@@ -28,7 +28,23 @@ export const suggestedUsers=async (req,res)=>{
 }
 export const editProfile=async (req,res)=>{
     try {
-       const {name,userName,bio,profession ,gender}=req.body
+       const {
+           name,
+           userName,
+           bio,
+           profession,
+           gender,
+           department,
+           year,
+           rollNumber,
+           github,
+           linkedin,
+           portfolio,
+           skills,
+           programmingLanguages,
+           achievements,
+           interests
+       } = req.body
        const user=await User.findById(req.userId).select("-password")
        if(!user){
         return res.status(400).json({message:"user not found"})
@@ -48,11 +64,21 @@ export const editProfile=async (req,res)=>{
        user.name=name
        user.userName=userName
        if(profileImage){
-user.profileImage=profileImage
+        user.profileImage=profileImage
        }
        user.bio=bio
        user.profession=profession
        user.gender=gender
+       user.department=department
+       user.year=year
+       user.rollNumber=rollNumber
+       user.github=github
+       user.linkedin=linkedin
+       user.portfolio=portfolio
+       user.skills=skills
+       user.programmingLanguages=programmingLanguages
+       user.achievements=achievements
+       user.interests=interests
 
        await user.save()
 
@@ -158,7 +184,9 @@ export const search=async (req,res)=>{
     const users=await User.find({
       $or:[
         {userName:{$regex:keyWord,$options:"i"}},
-        {name:{$regex:keyWord,$options:"i"}}
+        {name:{$regex:keyWord,$options:"i"}},
+        {rollNumber:{$regex:keyWord,$options:"i"}},
+        {department:{$regex:keyWord,$options:"i"}}
       ]
     }).select("-password")
 

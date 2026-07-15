@@ -19,6 +19,18 @@ const loopSchema=new mongoose.Schema({
         linkedinLink:{
             type:String
         },
+        projectTitle:{
+            type:String,
+            default:""
+        },
+        techStack:{
+            type:String,
+            default:""
+        },
+        portfolioLink:{
+            type:String,
+            default:""
+        },
         likes:[
             {
             type: mongoose.Schema.Types.ObjectId,

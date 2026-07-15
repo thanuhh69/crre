@@ -15,12 +15,9 @@ import Loops from './pages/Loops'
 import getAllLoops from './hooks/getAllLoops'
 import Story from './pages/Story'
 import getAllStories from './hooks/getAllStories'
-import Messages from './pages/Messages'
-import MessageArea from './pages/MessageArea'
 import {io} from "socket.io-client"
 import { setOnlineUsers, setSocket } from './redux/socketSlice'
 import getFollowingList from './hooks/getFollowingList'
-import getPrevChatUsers from './hooks/getPrevChatUsers'
 import Search from './pages/Search'
 import getAllNotifications from './hooks/getAllNotifications'
 import Notifications from './pages/Notifications'
@@ -33,7 +30,6 @@ function App() {
    getAllLoops()
    getAllStories()
    getFollowingList()
-   getPrevChatUsers()
    getAllNotifications()
   const {userData,notificationData}=useSelector(state=>state.user)
    
@@ -80,9 +76,7 @@ socket?.on("newNotification",(noti)=>{
        <Route path='/upload' element={userData?<Upload/>:<Navigate to={"/signin"}/>}/>
         <Route path='/search' element={userData?<Search/>:<Navigate to={"/signin"}/>}/>
           <Route path='/editprofile' element={userData?<EditProfile/>:<Navigate to={"/signin"}/>}/>
-            <Route path='/messages' element={userData?<Messages/>:<Navigate to={"/signin"}/>}/>
-            <Route path='/messageArea' element={userData?<MessageArea/>:<Navigate to={"/signin"}/>}/>
-             <Route path='/notifications' element={userData?<Notifications/>:<Navigate to={"/signin"}/>}/>
+              <Route path='/notifications' element={userData?<Notifications/>:<Navigate to={"/signin"}/>}/>
           <Route path='/loops' element={userData?<Loops/>:<Navigate to={"/signin"}/>}/>
     </Routes>
   )

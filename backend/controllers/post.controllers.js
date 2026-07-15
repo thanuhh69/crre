@@ -6,26 +6,59 @@ import { getSocketId, io } from "../socket.js";
 
 export const uploadPost = async (req, res) => {
     try {
-        const { caption, mediaType } = req.body
-        console.log('uploadPost invoked', { userId: req.userId, file: req.file && { originalname: req.file.originalname, path: req.file.path, size: req.file.size } })
-        let media;
-        if (req.file) {
+        const { 
+            caption, 
+            mediaType, 
+            category, 
+            projectTitle, 
+            techStack, 
+            githubRepo, 
+            liveDemo, 
+            linkedinPost, 
+            certificateIssuer, 
+            certificateDate 
+        } = req.body
+
+        let media = "";
+        if (req.files && req.files['media'] && req.files['media'][0]) {
             try {
-                media = await uploadOnCloudinary(req.file.path)
+                media = await uploadOnCloudinary(req.files['media'][0].path)
             } catch (err) {
-                console.error('uploadOnCloudinary failed for file', req.file && req.file.path, err)
+                console.error('uploadOnCloudinary failed for media', err)
                 return res.status(500).json({ message: `cloudinary upload failed ${err.message || err}` })
             }
-        } else {
-            return res.status(400).json({ message: "media is required" })
         }
+
+        let pdfUrl = "";
+        if (req.files && req.files['pdf'] && req.files['pdf'][0]) {
+            try {
+                pdfUrl = await uploadOnCloudinary(req.files['pdf'][0].path)
+            } catch (err) {
+                console.error('uploadOnCloudinary failed for pdf', err)
+                return res.status(500).json({ message: `cloudinary upload failed ${err.message || err}` })
+            }
+        }
+
         const post = await Post.create({
-            caption, media, mediaType, author: req.userId
+            caption, 
+            media, 
+            mediaType: mediaType || (media ? "image" : "none"), 
+            author: req.userId,
+            category,
+            projectTitle,
+            techStack,
+            githubRepo,
+            liveDemo,
+            linkedinPost,
+            certificateIssuer,
+            certificateDate: certificateDate ? new Date(certificateDate) : undefined,
+            pdfUrl
         })
+
         const user = await User.findById(req.userId)
         user.posts.push(post._id)
         await user.save()
-        const populatedPost = await Post.findById(post._id).populate("author", "name userName profileImage")
+        const populatedPost = await Post.findById(post._id).populate("author", "name userName profileImage department year rollNumber github linkedin portfolio")
         return res.status(201).json(populatedPost)
     } catch (error) {
         console.error('uploadPost error', error)
@@ -37,7 +70,7 @@ export const uploadPost = async (req, res) => {
 export const getAllPosts = async (req, res) => {
     try {
         const posts = await Post.find({})
-            .populate("author", "name userName profileImage")
+            .populate("author", "name userName profileImage department year rollNumber github linkedin portfolio")
             .populate("comments.author", "name userName profileImage").sort({ createdAt: -1 })
         return res.status(200).json(posts)
     } catch (error) {

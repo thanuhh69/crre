@@ -7,7 +7,10 @@ import { comment, deletePost, getAllPosts,like, saved, uploadPost } from "../con
 
 const postRouter=express.Router()
 
-postRouter.post("/upload",isAuth,upload.single("media"),uploadPost)
+postRouter.post("/upload",isAuth,upload.fields([
+    { name: "media", maxCount: 1 },
+    { name: "pdf", maxCount: 1 }
+]),uploadPost)
 postRouter.get("/getAll",isAuth,getAllPosts)
 postRouter.get("/like/:postId",isAuth,like)
 postRouter.get("/saved/:postId",isAuth,saved)
