@@ -132,19 +132,16 @@ const handleUpload=()=>{
 }
 
     return (
-        <div className='w-full h-[100vh] bg-black flex flex-col items-center '>
+        <div className='w-full min-h-[100vh] bg-[#00509d] flex flex-col items-center pb-[100px] overflow-y-auto'>
             <div className='w-full h-[80px]  flex items-center gap-[20px] px-[20px]'>
                 <MdOutlineKeyboardBackspace className='text-white cursor-pointer w-[25px]  h-[25px] ' onClick={() => navigate(`/`)} />
                 <h1 className='text-white text-[20px] font-semibold'>Upload Media</h1>
             </div>
 
-            <div className='w-[90%] max-w-[600px] h-[80px] bg-[white] rounded-full flex justify-around items-center gap-[10px]' >
-
-                <div className={`${uploadType == "post" ? "bg-black text-white shadow-2xl shadow-black" : ""}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold hover:bg-black rounded-full hover:text-white cursor-pointer hover:shadow-2xl hover:shadow-black`} onClick={() => setUploadType("post")}>Post</div>
-
-                <div className={`${uploadType == "story" ? "bg-black text-white shadow-2xl shadow-black" : ""}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold hover:bg-black rounded-full hover:text-white cursor-pointer hover:shadow-2xl hover:shadow-black`} onClick={() => setUploadType("story")}>Story</div>
-
-                <div className={`${uploadType == "loop" ? "bg-black text-white shadow-2xl shadow-black" : ""}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold hover:bg-black rounded-full hover:text-white cursor-pointer hover:shadow-2xl hover:shadow-black`} onClick={() => setUploadType("loop")}>Loop</div>
+            <div className='w-[90%] max-w-[600px] h-[80px] bg-white/10 border border-white/20 rounded-full flex justify-around items-center gap-[10px] px-[10px] mb-4' >
+                <div className={`${uploadType == "post" ? "bg-[#ffd100] text-black shadow-lg" : "text-white hover:bg-white/10"}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold rounded-full cursor-pointer transition-all`} onClick={() => setUploadType("post")}>Post</div>
+                <div className={`${uploadType == "story" ? "bg-[#ffd100] text-black shadow-lg" : "text-white hover:bg-white/10"}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold rounded-full cursor-pointer transition-all`} onClick={() => setUploadType("story")}>Story</div>
+                <div className={`${uploadType == "loop" ? "bg-[#ffd100] text-black shadow-lg" : "text-white hover:bg-white/10"}  w-[28%] h-[80%] flex justify-center items-center text-[19px] font-semibold rounded-full cursor-pointer transition-all`} onClick={() => setUploadType("loop")}>Loop</div>
             </div>
 
              {!frontendMedia && (
@@ -238,7 +235,7 @@ const handleUpload=()=>{
                 )}
                 </div>}
 
-                {frontendMedia && <button className='px-[10px] w-[60%] max-w-[400px]   py-[5px] h-[50px] bg-[white] mt-[50px] cursor-pointer rounded-2xl' onClick={handleUpload}>{loading?<ClipLoader size={30} color='black'/>:`Upload ${uploadType}` }</button>}
+                {frontendMedia && <button className='px-[10px] w-[60%] max-w-[400px]   py-[5px] h-[50px] bg-[#ffd100] hover:bg-[#e6bd00] text-black font-bold mt-[50px] cursor-pointer rounded-2xl transition-all shadow-md' onClick={handleUpload}>{loading?<ClipLoader size={30} color='black'/>:`Upload ${uploadType}` }</button>}
 
         </div>
     )

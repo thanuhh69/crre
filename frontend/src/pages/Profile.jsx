@@ -44,11 +44,11 @@ function Profile() {
         handleProfile()
     }, [userName, dispatch])
     return (
-        <div className='w-full min-h-screen bg-black'>
+        <div className='w-full min-h-screen bg-[#00509d]'>
             <div className='w-full h-[80px] flex justify-between items-center px-[30px] text-white'>
                 <div onClick={() => navigate("/")}><MdOutlineKeyboardBackspace className='text-white cursor-pointer w-[25px]  h-[25px] ' /></div>
                 <div className='font-semibold text-[20px]'>{profileData?.userName}</div>
-                <div className='font-semibold cursor-pointer text-[20px] text-blue-500 ' onClick={handleLogOut}>Log Out</div>
+                <div className='font-bold cursor-pointer text-[15px] bg-[#ffd100] text-black px-[15px] py-[6px] rounded-full hover:bg-[#e6bd00] transition-all shadow-md' onClick={handleLogOut}>Log Out</div>
             </div>
 
             <div className='w-full flex flex-col md:flex-row items-center md:items-start gap-[20px] lg:gap-[50px] pt-[20px] px-[20px] md:px-[10%] justify-center text-white'>
@@ -167,7 +167,7 @@ function Profile() {
             <div className='w-full h-[80px] flex justify-center items-center gap-[20px] mt-[10px]'>
                 {profileData?._id == userData._id
                     &&
-                    <button className='px-[10px] min-w-[150px] py-[5px] h-[40px] bg-[white] cursor-pointer rounded-2xl' onClick={() => navigate("/editprofile")}>Edit Profile</button>}
+                    <button className='px-[15px] min-w-[150px] py-[5px] h-[40px] bg-[#ffd100] hover:bg-[#e6bd00] text-black font-semibold cursor-pointer rounded-2xl transition-all shadow-md' onClick={() => navigate("/editprofile")}>Edit Profile</button>}
 
                 {profileData?._id != userData._id
                     &&

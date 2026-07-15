@@ -32,7 +32,7 @@ function Search() {
     },[input])
     console.log(searchData)
   return (
-    <div className='w-full min-h-[100vh] bg-black flex items-center flex-col gap-[20px] '>
+    <div className='w-full min-h-[100vh] bg-[#00509d] flex items-center flex-col gap-[20px] '>
        <div className='w-full h-[80px]  flex items-center gap-[20px] px-[20px] absolute top-0 '>
                       <MdOutlineKeyboardBackspace className='text-white cursor-pointer w-[25px]  h-[25px] ' onClick={() => navigate(`/`)} />
                  

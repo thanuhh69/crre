@@ -103,7 +103,7 @@ socket?.on("deletedPost",(data)=>{
           </div>
         </div>
         <div className="flex items-center gap-[10px]">
-          <span className="text-[12px] font-bold bg-blue-100 text-blue-700 px-[8px] py-[4px] rounded-full border border-blue-200">
+          <span className="text-[12px] font-bold bg-[#ffd100] text-black px-[10px] py-[4px] rounded-full border border-[#ffd100]">
             {post.category || "Post"}
           </span>
           {userData._id!=post.author._id &&  <FollowButton tailwind={'px-[10px] min-w-[60px] md:min-w-[100px] py-[5px] h-[30px] md:h-[40px] bg-[black] text-white rounded-2xl text-[14px] md:text-[16px]'} targetUserId={post.author._id}/>}
@@ -131,7 +131,7 @@ socket?.on("deletedPost",(data)=>{
                         </a>
                     )}
                     {post.liveDemo && (
-                        <a href={post.liveDemo.startsWith('http') ? post.liveDemo : `https://${post.liveDemo}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[5px] bg-blue-600 hover:bg-blue-500 text-white text-[13px] px-[10px] py-[6px] rounded-lg transition-colors font-medium'>
+                        <a href={post.liveDemo.startsWith('http') ? post.liveDemo : `https://${post.liveDemo}`} target="_blank" rel="noopener noreferrer" className='flex items-center gap-[5px] bg-[#ffd100] hover:bg-[#e6bd00] text-black text-[13px] px-[10px] py-[6px] rounded-lg transition-colors font-semibold shadow-sm'>
                             <FaExternalLinkAlt /> Live Demo
                         </a>
                     )}
